@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CSM WYVERN Tide">
+<title>CSM WYVERN – Singapore Tide</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;background:#eef5f8;color:#102a43}
+header{background:#063b5c;color:white;padding:28px 18px 18px;position:sticky;top:0;z-index:5}
+h1{font-size:24px;margin:0}.sub{opacity:.8;font-size:13px;margin-top:4px}
+nav{display:flex;gap:8px;overflow:auto;padding:10px;background:white;position:sticky;top:86px;z-index:4;border-bottom:1px solid #ddd}
+nav button{border:0;background:#edf3f6;border-radius:18px;padding:9px 13px;white-space:nowrap;color:#16425d;font-weight:600}
+nav button.active{background:#0b6e99;color:white}
+main{padding:15px;max-width:720px;margin:auto}.card{background:white;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #00000010}
+label{font-size:12px;color:#607d8b;font-weight:700;display:block;margin:10px 0 5px}
+select,input,button.action{width:100%;padding:12px;border:1px solid #c9d7df;border-radius:11px;background:white;font-size:16px}
+button.action{background:#0b6e99;color:white;border:0;font-weight:700;margin-top:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:#f2f8fa;padding:12px;border-radius:12px}.metric b{font-size:20px}
+.event{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5edf0;padding:11px 0}.event:last-child{border:0}
+.high{color:#087f5b}.low{color:#b45309}.muted{color:#6b7c85;font-size:13px}
+canvas{width:100%;height:210px;background:#f7fbfc;border-radius:12px}
+.hidden{display:none}.safe{color:#087f5b;font-weight:800}.danger{color:#b42318;font-weight:800}
+.smallbtn{width:auto!important;font-size:13px!important;padding:9px 12px!important;background:#edf3f6!important;color:#16425d!important;margin:4px 4px 0 0}
+footer{text-align:center;padding:20px;color:#71838c;font-size:11px}
+</style>
+</head>
+<body>
+<header><h1>CSM WYVERN</h1><div class="sub">SINGAPORE TIDE • iPhone Web App</div></header>
+<nav>
+<button class="tab active" data-tab="tide">🌊 Tide</button>
+<button class="tab" data-tab="current">↗️ Current</button>
+<button class="tab" data-tab="ukc">⚓ UKC</button>
+<button class="tab" data-tab="passage">🗺 Passage</button>
+<button class="tab" data-tab="locations">📍 Locations</button>
+</nav>
+<main>
+<section id="tide" class="page">
+<div class="card">
+<label>TIDAL STATION</label>
+<select id="station"></select>
+<label>DATE</label><input id="tideDate" type="date">
+<button class="action" onclick="showTide()">VIEW TIDE</button>
+</div>
+<div class="card"><h3 id="resultTitle">TIDE RESULT</h3><div id="events"></div><canvas id="chart" width="700" height="260"></canvas></div>
+<div class="card"><div class="grid"><div class="metric"><span class="muted">Next Tide</span><br><b id="nextType">—</b></div><div class="metric"><span class="muted">Height</span><br><b id="nextHeight">—</b></div></div><p class="muted" id="nextTime"></p></div>
+</section>
+
+<section id="current" class="page hidden">
+<div class="card"><h3>Tidal Current</h3>
+<label>CURRENT STATION</label><select id="currentStation"></select>
+<label>DATE</label><input id="currentDate" type="date">
+<label>TIME</label><input id="currentTime" type="time" value="12:00">
+<button class="action" onclick="showCurrent()">VIEW CURRENT</button>
+</div>
+<div class="card" id="currentResult"><h3>Current Result</h3><div class="grid"><div class="metric">Direction<br><b id="curDir">—</b></div><div class="metric">Speed<br><b id="curSpeed">—</b></div></div><p id="curFlow" class="muted">—</p><p class="muted">DEMO display — replace with official/licensed tidal-stream data before operational use.</p></div>
+</section>
+
+<section id="ukc" class="page hidden">
+<div class="card"><h3>UKC Calculator</h3>
+<label>CHART DEPTH (m)</label><input id="depth" type="number" step="0.01" placeholder="4.20">
+<label>TIDE HEIGHT (m)</label><input id="tide" type="number" step="0.01" placeholder="1.35">
+<label>VESSEL DRAFT (m)</label><input id="draft" type="number" step="0.01" placeholder="3.20">
+<label>SAFETY MARGIN (m)</label><input id="safety" type="number" step="0.01" placeholder="0.50">
+<button class="action" onclick="calcUKC()">CALCULATE</button></div>
+<div class="card"><h3>Result</h3><div class="grid"><div class="metric">Available Depth<br><b id="avail">—</b></div><div class="metric">UKC<br><b id="ukc">—</b></div></div><p id="ukcStatus"></p></div>
+</section>
+
+<section id="passage" class="page hidden">
+<div class="card"><h3>Passage Plan</h3>
+<label>FROM</label><select id="from"></select>
+<label>TO</label><select id="to"></select>
+<label>DATE</label><input id="pDate" type="date">
+<label>ETD</label><input id="etd" type="time" value="12:00">
+<label>AVERAGE SPEED (kn)</label><input id="speed" type="number" step="0.1" value="8">
+<label>DISTANCE (NM)</label><input id="distance" type="number" step="0.1" placeholder="Enter distance">
+<button class="action" onclick="calcPassage()">CALCULATE ETA</button></div>
+<div class="card"><h3>Passage Result</h3><div id="passageResult" class="muted">Enter route data above.</div></div>
+</section>
+
+<section id="locations" class="page hidden">
+<div class="card"><h3>Saved Locations</h3><p class="muted">Locations are stored locally on this iPhone.</p><div id="locationList"></div>
+<button class="smallbtn" onclick="addLocation()">＋ Add Location</button><button class="smallbtn" onclick="saveLocations()">SAVE</button></div>
+</section>
+</main>
+<footer>FOR INFORMATION AND PASSAGE PLANNING PURPOSES ONLY – NOT FOR NAVIGATION.<br>Demo tide/current values must be replaced with official/licensed data.</footer>
+
+<script>
+const heightStations=["West Tuas","Sultan Shoal Lighthouse","Raffles Lighthouse","West Coast","Bukom","Tanjong Pagar","Tanah Merah","Tanjong Changi","Sembawang","Singapore Strait - Horsburgh Lighthouse"];
+const currentStations=["Main Strait - off Tuas View","Sinki Fairway - Banyan","Jong Fairway - off Sisters Buoy","Main Strait - off Shell SBM Buoy","Sentosa - off Cruise Bay","East Buran","Main Strait - Eastern Petroleum A"];
+const sample=[["02:15","LOW WATER",0.80],["08:42","HIGH WATER",2.70],["15:01","LOW WATER",0.60],["21:18","HIGH WATER",2.50]];
+const $=id=>document.getElementById(id);
+function fill(){
+heightStations.forEach(x=>["station","from","to"].forEach(id=>$(id).add(new Option(x,x))));
+currentStations.forEach(x=>$("currentStation").add(new Option(x,x)));
+$("station").value=heightStations[0]; $("from").value=heightStations[0]; $("to").value=heightStations[1];
+const d=new Date().toISOString().slice(0,10); ["tideDate","currentDate","pDate"].forEach(id=>$(id).value=d);
+showTide(); loadLocations();
+}
+function showTide(){
+$("resultTitle").textContent=$("station").value+" • "+new Date($("tideDate").value+"T00:00").toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"});
+$("events").innerHTML=sample.map(e=>`<div class="event"><span class="${e[1].startsWith("HIGH")?"high":"low"}"><b>${e[1]}</b><br>${e[0]}</span><b>${e[2].toFixed(2)} m CD</b></div>`).join("");
+let now=new Date(), next=sample[0]; $("nextType").textContent=next[1].replace(" WATER",""); $("nextHeight").textContent=next[2].toFixed(2)+" m"; $("nextTime").textContent="Next tide: "+next[0];
+drawChart();
+}
+function drawChart(){let c=$("chart"),x=c.getContext("2d");x.clearRect(0,0,c.width,c.height);let vals=sample.map(e=>e[2]),min=Math.min(...vals),max=Math.max(...vals);x.beginPath();vals.forEach((v,i)=>{let px=45+i*(c.width-70)/(vals.length-1),py=225-(v-min)/(max-min)*180;i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle="#0b6e99";x.lineWidth=5;x.stroke();x.font="18px sans-serif";sample.forEach((e,i)=>{let px=45+i*(c.width-70)/(vals.length-1);x.fillStyle="#526b78";x.fillText(e[0],px-25,250);x.fillText(e[2].toFixed(1)+"m",px-18,35+(i%2)*18)})}
+function showCurrent(){let h=parseInt(($("currentTime").value||"12:00").split(":")[0]);let dir=(h*29+120)%360;let sp=(0.8+Math.abs(Math.sin(h))*1.4).toFixed(1);$("curDir").textContent=Math.round(dir)+"°";$("curSpeed").textContent=sp+" kn";$("curFlow").textContent=sp>1.2?"Flow: DEMO STRONG":"Flow: DEMO MODERATE";}
+function calcUKC(){let d=+$("depth").value||0,t=+$("tide").value||0,dr=+$("draft").value||0,s=+$("safety").value||0,a=d+t,u=a-dr;$("avail").textContent=a.toFixed(2)+" m";$("ukc").textContent=u.toFixed(2)+" m";$("ukcStatus").innerHTML=u>=s&&u>0?'<span class="safe">✓ SAFE — UKC above safety margin</span>':'<span class="danger">⚠ CHECK / NOT SAFE</span>';}
+function calcPassage(){let dist=+$("distance").value||0,spd=+$("speed").value||0;if(!dist||!spd){$("passageResult").textContent="Please enter distance and speed.";return}let [h,m]=$("etd").value.split(":").map(Number),mins=dist/spd*60;let d=new Date($("pDate").value+"T00:00");d.setHours(h,m+mins);$("passageResult").innerHTML=`<b>${$("from").value} → ${$("to").value}</b><br>Distance: ${dist.toFixed(1)} NM<br>Average speed: ${spd.toFixed(1)} kn<br><br><b>Estimated ETA: ${d.toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"})}</b><br><br><span class="muted">Tide at ETA and automatic course/coordinates will be added when official route/location data is loaded.</span>`}
+function loadLocations(){let data=JSON.parse(localStorage.getItem("csmLocations")||"null")||[{name:"AEPB",lat:"",lon:""},{name:"AEBA",lat:"",lon:""}];$("locationList").innerHTML=data.map((l,i)=>`<div class="card" style="margin:8px 0;padding:10px"><input data-i="${i}" data-k="name" value="${l.name}" placeholder="Name"><input data-i="${i}" data-k="lat" value="${l.lat}" placeholder="Latitude"><input data-i="${i}" data-k="lon" value="${l.lon}" placeholder="Longitude"></div>`).join("");}
+function saveLocations(){let arr=[...document.querySelectorAll("#locationList input[data-k=name]")].map((e,i)=>({name:e.value,lat:document.querySelector(`#locationList input[data-i="${i}"][data-k="lat"]`).value,lon:document.querySelector(`#locationList input[data-i="${i}"][data-k="lon"]`).value}));localStorage.setItem("csmLocations",JSON.stringify(arr));alert("Locations saved on this iPhone.");}
+function addLocation(){let arr=JSON.parse(localStorage.getItem("csmLocations")||"null")||[{name:"AEPB",lat:"",lon:""},{name:"AEBA",lat:"",lon:""}];arr.push({name:"NEW LOCATION",lat:"",lon:""});localStorage.setItem("csmLocations",JSON.stringify(arr));loadLocations();}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden")});
+fill();
+</script>
+</body></html>
