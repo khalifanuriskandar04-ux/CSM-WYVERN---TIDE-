@@ -1,262 +1,752 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b6fa4">
 <title>CSM WYVERN - Bunker Operation</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef4f7;color:#10212b}
-header{background:#0b6fa4;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:10}
-header h1{margin:0;font-size:21px} header p{margin:5px 0 0;font-size:12px;opacity:.95}
-main{max-width:850px;margin:auto;padding:12px}
-.card{background:#fff;border-radius:14px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
-h2,h3{margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-label{display:block;font-size:12px;font-weight:700;margin:3px 0 5px;letter-spacing:.25px}
-input,select,textarea,button{width:100%;min-height:44px;border:1px solid #c8d5dc;border-radius:9px;padding:9px 11px;font-size:16px;background:#fff}
-textarea{min-height:70px;resize:vertical}
-button{background:#0b6fa4;color:#fff;border:0;font-weight:700;cursor:pointer}
-button.secondary{background:#607d8b}.danger{background:#b42318}
-.status{padding:10px 12px;border-radius:9px;background:#f3f8fb;font-size:13px;margin-bottom:10px}
-.ok{background:#e9f8ef;color:#176b3a}.err{background:#fdecec;color:#a51d1d}
-.small{font-size:12px;color:#61717a}
-.row-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tablewrap{overflow:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{padding:8px 6px;border-bottom:1px solid #dfe7eb;text-align:left;white-space:nowrap}
-th{background:#0b6fa4;color:#fff}
-.measure-grid{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:8px}
-.measure-grid label{font-size:10px}
-.measure-grid input{min-height:40px;font-size:14px}
-.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#e7f3f9;color:#0b6fa4;font-size:11px;font-weight:700}
-.total{font-size:20px;font-weight:800}
-hr{border:0;border-top:1px solid #e1e8eb;margin:14px 0}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#eef3f7;
+  color:#17212b;
+}
+
+header{
+  background:#0b6fa4;
+  color:white;
+  padding:18px 16px;
+}
+
+header h1{
+  margin:0;
+  font-size:21px;
+}
+
+header p{
+  margin:5px 0 0;
+  font-size:13px;
+  opacity:.9;
+}
+
+main{
+  max-width:900px;
+  margin:auto;
+  padding:12px;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+h2{
+  margin:0 0 14px;
+  font-size:18px;
+  color:#0b6fa4;
+}
+
+h3{
+  margin:16px 0 10px;
+  font-size:15px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:5px;
+}
+
+input,select,textarea,button{
+  width:100%;
+  min-height:44px;
+  border:1px solid #cbd5df;
+  border-radius:9px;
+  padding:10px;
+  font-size:15px;
+  background:white;
+}
+
+textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+button{
+  border:0;
+  background:#0b6fa4;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#607d8b;
+}
+
+button.danger{
+  background:#c62828;
+}
+
+.button-row{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.status{
+  padding:11px;
+  border-radius:9px;
+  margin-top:10px;
+  font-size:13px;
+}
+
+.status.ok{
+  background:#e8f5e9;
+  color:#176b3a;
+}
+
+.status.error{
+  background:#ffebee;
+  color:#b71c1c;
+}
+
+.status.info{
+  background:#e3f2fd;
+  color:#075985;
+}
+
+.result{
+  background:#f7fafc;
+  border-radius:10px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.big{
+  font-size:28px;
+  font-weight:800;
+  color:#0b6fa4;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+th,td{
+  padding:8px;
+  border-bottom:1px solid #d9e1e7;
+  text-align:left;
+}
+
+th{
+  background:#0b6fa4;
+  color:white;
+}
+
 @media(max-width:650px){
- .grid{grid-template-columns:1fr}
- .measure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .button-row{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>CSM WYVERN</h1>
-<p>BUNKER OPERATION &amp; TANK MEASUREMENT</p>
+  <h1>CSM WYVERN – BUNKER OPERATION</h1>
+  <p>Central Star Marine Supplies Pte Ltd</p>
 </header>
 
 <main>
+
+<!-- OPERATION -->
 <div class="card">
-<h3>DATABASE CONNECTION</h3>
-<div id="dbStatus" class="status">Supabase configuration is required.</div>
+
+<h2>1. Bunker Operation</h2>
+
 <div class="grid">
-<div><label>SUPABASE URL</label><input id="sbUrl" placeholder="https://xxxxxxxx.supabase.co"></div>
-<div><label>SUPABASE ANON KEY</label><input id="sbKey" type="password" placeholder="eyJ..."></div>
-</div>
-<div class="row-actions">
-<button onclick="connectDB()">CONNECT DATABASE</button>
-<button class="secondary" onclick="clearConfig()">CLEAR</button>
-</div>
-<p class="small">Use the Supabase Project URL and anon/public key. Never put the service_role key in this HTML.</p>
+
+<div>
+<label>Operation Date</label>
+<input type="date" id="operationDate">
 </div>
 
-<div class="card">
-<h2>1. BUNKER OPERATION</h2>
-<div class="grid">
-<div><label>OPERATION NO.</label><input id="operation_no" placeholder="e.g. CSM-2026-001"></div>
-<div><label>OPERATION DATE</label><input id="operation_date" type="date"></div>
-<div><label>VESSEL NAME</label><input id="vessel_name" value="CSM WYVERN"></div>
-<div><label>LOCATION</label><input id="location" placeholder="e.g. Singapore Anchorage"></div>
-<div><label>OPERATION TYPE</label>
-<select id="operation_type"><option value="">Select</option><option>BUNKER SUPPLY</option><option>RECEIVING</option><option>TRANSFER</option><option>LOADING</option><option>DISCHARGE</option></select></div>
-<div><label>SUPPLIER</label><input id="supplier" placeholder="Supplier"></div>
-<div><label>RECEIVING VESSEL</label><input id="receiving_vessel" placeholder="Receiving vessel"></div>
-<div><label>PRODUCT</label>
-<select id="product_id"><option value="">Connect database to load products</option></select></div>
-<div><label>QUANTITY (MT)</label><input id="quantity_mt" type="number" step="0.001"></div>
-<div><label>MFM START</label><input id="mfm_start" type="number" step="0.001"></div>
-<div><label>MFM END</label><input id="mfm_end" type="number" step="0.001"></div>
-<div><label>OPERATOR ID (optional)</label><input id="operator_id" placeholder="UUID"></div>
-</div>
-<div class="grid">
-<div><label>START TIME</label><input id="start_time" type="datetime-local"></div>
-<div><label>END TIME</label><input id="end_time" type="datetime-local"></div>
-</div>
-<label>REMARKS</label><textarea id="op_remarks" placeholder="Operation remarks"></textarea>
+<div>
+<label>Operation Time</label>
+<input type="time" id="operationTime">
 </div>
 
-<div class="card">
-<h2>2. TANK MEASUREMENTS</h2>
-<p class="small">Enter one row for each tank. LCG/VCG and moments are manual inputs for now, so the app will not invent vessel tank particulars.</p>
-<div class="measure-grid">
-<div><label>TANK CODE</label><input id="tank_code" placeholder="e.g. CARGO 1P"></div>
-<div><label>SOUNDING (mm)</label><input id="sounding_mm" type="number" step="0.01"></div>
-<div><label>ULLAGE (mm)</label><input id="ullage_mm" type="number" step="0.01"></div>
-<div><label>TEMP (°C)</label><input id="temperature_c" type="number" step="0.01"></div>
-<div><label>DENSITY @15°C</label><input id="density_15c" type="number" step="0.0001"></div>
-<div><label>OBS. DENSITY</label><input id="observed_density" type="number" step="0.0001"></div>
-<div><label>OBS. VOLUME (m³)</label><input id="observed_volume_m3" type="number" step="0.001"></div>
-<div><label>VOLUME @15°C (m³)</label><input id="volume_15c_m3" type="number" step="0.001"></div>
-<div><label>QUANTITY (MT)</label><input id="tank_quantity_mt" type="number" step="0.001"></div>
-<div><label>LCG (m)</label><input id="lcg_m" type="number" step="0.001"></div>
-<div><label>VCG (m)</label><input id="vcg_m" type="number" step="0.001"></div>
-<div><label>L-MOMENT</label><input id="l_moment" type="number" step="0.001"></div>
-<div><label>V-MOMENT</label><input id="v_moment" type="number" step="0.001"></div>
-</div>
-<label>MEASUREMENT REMARKS</label><textarea id="tank_remarks" placeholder="Tank remarks"></textarea>
-<button onclick="addTankRow()">ADD TANK</button>
-<hr>
-<div class="tablewrap">
-<table>
-<thead><tr><th>Tank</th><th>Sounding</th><th>Temp</th><th>Density</th><th>Vol 15°C</th><th>MT</th><th>LCG</th><th>VCG</th><th></th></tr></thead>
-<tbody id="tankRows"></tbody>
-</table>
-</div>
-<p>Total tank quantity: <span class="total" id="tankTotal">0.000 MT</span></p>
+<div>
+<label>Location / Anchorage</label>
+<input type="text" id="location" placeholder="Singapore">
 </div>
 
-<div class="card">
-<h2>3. SAVE</h2>
-<div id="saveStatus" class="status">Connect to Supabase before saving.</div>
-<div class="row-actions">
+<div>
+<label>Product</label>
+<select id="product">
+<option value="">Select Product</option>
+<option value="MGO">MGO – Marine Gas Oil</option>
+<option value="LSFO">LSFO – Low Sulphur Fuel Oil</option>
+<option value="VLSFO">VLSFO – Very Low Sulphur Fuel Oil</option>
+<option value="HFO">HFO – Heavy Fuel Oil</option>
+</select>
+</div>
+
+<div>
+<label>Supplier / Receiving Vessel</label>
+<input type="text" id="vessel">
+</div>
+
+<div>
+<label>Bunker Reference / EBDN No.</label>
+<input type="text" id="reference">
+</div>
+
+</div>
+
+<div class="button-row">
 <button onclick="saveOperation()">SAVE OPERATION</button>
-<button class="secondary" onclick="resetForm()">NEW OPERATION</button>
-</div>
+<button class="secondary" onclick="clearOperation()">CLEAR</button>
 </div>
 
+<div id="operationStatus"></div>
+
+</div>
+
+
+<!-- TANK MEASUREMENTS -->
 <div class="card">
-<h2>4. RECENT OPERATIONS</h2>
-<button class="secondary" onclick="loadOperations()">REFRESH</button>
-<div class="tablewrap" style="margin-top:10px">
+
+<h2>2. Tank Measurement</h2>
+
+<div class="grid">
+
+<div>
+<label>Tank</label>
+<select id="tank">
+<option value="">Select Tank</option>
+<option>1P</option>
+<option>1S</option>
+<option>2P</option>
+<option>2S</option>
+<option>3P</option>
+<option>3S</option>
+<option>4P</option>
+<option>4S</option>
+<option>5P</option>
+<option>5S</option>
+<option>6P</option>
+<option>6S</option>
+<option>7P</option>
+<option>7S</option>
+<option>FPT</option>
+<option>AFT PEAK</option>
+</select>
+</div>
+
+<div>
+<label>Measurement Time</label>
+<input type="datetime-local" id="measurementTime">
+</div>
+
+<div>
+<label>Sounding (mm)</label>
+<input type="number" id="sounding" step="0.01">
+</div>
+
+<div>
+<label>Ullage (mm)</label>
+<input type="number" id="ullage" step="0.01">
+</div>
+
+<div>
+<label>Temperature (°C)</label>
+<input type="number" id="temperature" step="0.01">
+</div>
+
+<div>
+<label>Density @ 15°C</label>
+<input type="number" id="density15" step="0.0001" placeholder="e.g. 0.8400">
+</div>
+
+<div>
+<label>Observed Density</label>
+<input type="number" id="observedDensity" step="0.0001">
+</div>
+
+<div>
+<label>Observed Volume (m³)</label>
+<input type="number" id="observedVolume" step="0.001">
+</div>
+
+<div>
+<label>Volume @ 15°C (m³)</label>
+<input type="number" id="volume15" step="0.001">
+</div>
+
+<div>
+<label>Quantity (MT)</label>
+<input type="number" id="quantity" step="0.001">
+</div>
+
+<div>
+<label>LCG (m)</label>
+<input type="number" id="lcg" step="0.001">
+</div>
+
+<div>
+<label>VCG (m)</label>
+<input type="number" id="vcg" step="0.001">
+</div>
+
+</div>
+
+<div class="grid" style="margin-top:12px">
+
+<div>
+<label>L Moment</label>
+<input type="number" id="lmoment" step="0.001">
+</div>
+
+<div>
+<label>V Moment</label>
+<input type="number" id="vmoment" step="0.001">
+</div>
+
+</div>
+
+<label style="margin-top:12px">Remarks</label>
+<textarea id="remarks" placeholder="Remarks..."></textarea>
+
+<div class="button-row">
+<button onclick="saveTank()">SAVE TANK</button>
+<button class="secondary" onclick="clearTank()">CLEAR</button>
+</div>
+
+<div id="tankStatus"></div>
+
+</div>
+
+
+<!-- CURRENT DATA -->
+<div class="card">
+
+<h2>3. Current Operation Data</h2>
+
+<div class="result">
+
+<div class="big" id="totalQuantity">0.000 MT</div>
+
+<div>Total quantity entered</div>
+
+</div>
+
+<div class="table-wrap" style="margin-top:12px">
+
 <table>
-<thead><tr><th>Date</th><th>Operation No.</th><th>Location</th><th>Product</th><th>Qty MT</th><th>Status</th></tr></thead>
-<tbody id="operationsRows"></tbody>
+<thead>
+<tr>
+<th>Tank</th>
+<th>Temp</th>
+<th>Volume m³</th>
+<th>Volume @15°C</th>
+<th>Quantity MT</th>
+<th>LCG</th>
+</tr>
+</thead>
+
+<tbody id="tankTable">
+<tr>
+<td colspan="6">No tank data</td>
+</tr>
+</tbody>
+
 </table>
+
 </div>
+
 </div>
+
+
+<!-- CONNECTION -->
+<div class="card">
+
+<h2>4. Database Connection</h2>
+
+<div class="status info">
+Database connection will be connected to Supabase.
+</div>
+
+<p style="font-size:13px">
+The application structure is ready for:
+</p>
+
+<ul style="font-size:13px;line-height:1.8">
+<li>Bunker Products</li>
+<li>Bunker Operations</li>
+<li>Tank Measurements</li>
+<li>Quantity / MT</li>
+<li>LCG / VCG</li>
+<li>L Moment / V Moment</li>
+<li>Operation history</li>
+</ul>
+
+</div>
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-let sb=null, tanks=[];
 
-const $=id=>document.getElementById(id);
-$("operation_date").value=new Date().toISOString().slice(0,10);
+/* =====================================================
+   CSM WYVERN BUNKER APPLICATION
+   ===================================================== */
 
-function setStatus(id,msg,type=""){
-  const e=$(id); e.className="status "+type; e.textContent=msg;
-}
+let currentOperation = null;
+let tankData = [];
 
-function connectDB(){
-  const url=$("sbUrl").value.trim(), key=$("sbKey").value.trim();
-  if(!url || !key){setStatus("dbStatus","Please enter Supabase URL and anon/public key.","err");return}
-  try{
-    sb=supabase.createClient(url,key);
-    localStorage.setItem("csm_sb_url",url);
-    localStorage.setItem("csm_sb_key",key);
-    setStatus("dbStatus","Supabase client ready. Testing database...","ok");
-    loadProducts();
-    loadOperations();
-  }catch(e){setStatus("dbStatus",e.message,"err")}
-}
-function clearConfig(){
-  localStorage.removeItem("csm_sb_url"); localStorage.removeItem("csm_sb_key");
-  $("sbUrl").value=""; $("sbKey").value=""; sb=null;
-  setStatus("dbStatus","Configuration cleared.");
-}
-function restoreConfig(){
-  $("sbUrl").value=localStorage.getItem("csm_sb_url")||"";
-  $("sbKey").value=localStorage.getItem("csm_sb_key")||"";
-  if($("sbUrl").value && $("sbKey").value) connectDB();
-}
-async function loadProducts(){
-  if(!sb)return;
-  const {data,error}=await sb.from("bunker_products").select("id,product_code,product_name,unit,active").eq("active",true).order("product_code");
-  if(error){setStatus("dbStatus","Database error loading products: "+error.message,"err");return}
-  $("product_id").innerHTML='<option value="">Select product</option>'+data.map(p=>`<option value="${p.id}">${esc(p.product_code)} — ${esc(p.product_name)}</option>`).join("");
-  setStatus("dbStatus","Connected. Products loaded: "+data.length,"ok");
-}
-function addTankRow(){
-  const tank={
-    tank_code:$("tank_code").value.trim(),
-    sounding_mm:num("sounding_mm"), ullage_mm:num("ullage_mm"),
-    temperature_c:num("temperature_c"), density_15c:num("density_15c"), observed_density:num("observed_density"),
-    observed_volume_m3:num("observed_volume_m3"), volume_15c_m3:num("volume_15c_m3"),
-    quantity_mt:num("tank_quantity_mt"), lcg_m:num("lcg_m"), vcg_m:num("vcg_m"),
-    l_moment:num("l_moment"), v_moment:num("v_moment"), remarks:$("tank_remarks").value.trim()
-  };
-  if(!tank.tank_code){alert("Enter Tank Code.");return}
-  const existing=tanks.findIndex(x=>x.tank_code.toLowerCase()===tank.tank_code.toLowerCase());
-  if(existing>=0)tanks[existing]=tank; else tanks.push(tank);
-  renderTanks();
-  ["tank_code","sounding_mm","ullage_mm","temperature_c","density_15c","observed_density","observed_volume_m3","volume_15c_m3","tank_quantity_mt","lcg_m","vcg_m","l_moment","v_moment","tank_remarks"].forEach(id=>$(id).value="");
-}
-function renderTanks(){
-  $("tankRows").innerHTML=tanks.map((t,i)=>`<tr>
-<td>${esc(t.tank_code)}</td><td>${fmt(t.sounding_mm)}</td><td>${fmt(t.temperature_c)}</td>
-<td>${fmt(t.density_15c,4)}</td><td>${fmt(t.volume_15c_m3)}</td><td>${fmt(t.quantity_mt)}</td>
-<td>${fmt(t.lcg_m)}</td><td>${fmt(t.vcg_m)}</td><td><button class="danger" style="width:auto;min-height:34px;padding:6px 9px" onclick="removeTank(${i})">×</button></td>
-</tr>`).join("");
-  $("tankTotal").textContent=tanks.reduce((a,b)=>a+(Number(b.quantity_mt)||0),0).toFixed(3)+" MT";
-}
-function removeTank(i){tanks.splice(i,1);renderTanks()}
-function num(id){const v=$(id).value; return v===""?null:Number(v)}
-function fmt(v,d=3){return v==null||v===""?"":Number(v).toFixed(d)}
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
-async function saveOperation(){
-  if(!sb){setStatus("saveStatus","Connect to Supabase first.","err");return}
-  const product=$("product_id").value||null;
-  const operation={
-    operation_no:$("operation_no").value.trim()||null,
-    operation_date:$("operation_date").value||null,
-    vessel_name:$("vessel_name").value.trim()||"CSM WYVERN",
-    location:$("location").value.trim()||null,
-    operation_type:$("operation_type").value||null,
-    supplier:$("supplier").value.trim()||null,
-    receiving_vessel:$("receiving_vessel").value.trim()||null,
-    product: product ? ($("product_id").selectedOptions[0]?.textContent.split(" — ")[0]||null) : null,
-    product_id:product,
-    quantity_mt:num("quantity_mt"),
-    mfm_start:num("mfm_start"),
-    mfm_end:num("mfm_end"),
-    start_time:$("start_time").value ? new Date($("start_time").value).toISOString():null,
-    end_time:$("end_time").value ? new Date($("end_time").value).toISOString():null,
-    operator_id:$("operator_id").value.trim()||null,
-    remarks:$("op_remarks").value.trim()||null,
-    status:"COMPLETED"
-  };
-  setStatus("saveStatus","Saving operation...","ok");
-  const {data,error}=await sb.from("bunker_operations").insert(operation).select("id").single();
-  if(error){setStatus("saveStatus","Operation save failed: "+error.message,"err");return}
-  const operationId=data.id;
-  if(tanks.length){
-    const rows=tanks.map(t=>({...t,operation_id:operationId,measurement_time:new Date().toISOString()}));
-    const r=await sb.from("bunker_tank_measurements").insert(rows);
-    if(r.error){
-      setStatus("saveStatus","Operation saved, but tank measurements failed: "+r.error.message,"err");
-      return;
-    }
+/* DEFAULT DATE/TIME */
+
+const now = new Date();
+
+document.getElementById("operationDate").value =
+  now.toISOString().slice(0,10);
+
+document.getElementById("operationTime").value =
+  now.toTimeString().slice(0,5);
+
+
+/* =====================================================
+   SAVE OPERATION
+   ===================================================== */
+
+function saveOperation(){
+
+  const product =
+    document.getElementById("product").value;
+
+  if(!product){
+    showStatus(
+      "operationStatus",
+      "Please select bunker product.",
+      "error"
+    );
+    return;
   }
-  setStatus("saveStatus","SUCCESS — Operation and "+tanks.length+" tank measurement(s) saved.","ok");
-  loadOperations();
+
+  currentOperation = {
+
+    operation_date:
+      document.getElementById("operationDate").value,
+
+    operation_time:
+      document.getElementById("operationTime").value,
+
+    location:
+      document.getElementById("location").value,
+
+    product:
+      product,
+
+    vessel:
+      document.getElementById("vessel").value,
+
+    reference:
+      document.getElementById("reference").value
+
+  };
+
+  showStatus(
+    "operationStatus",
+    "Operation saved locally. Ready for tank measurements.",
+    "ok"
+  );
+
 }
-async function loadOperations(){
-  if(!sb)return;
-  const {data,error}=await sb.from("bunker_operations").select("operation_date,operation_no,location,product,quantity_mt,status").order("operation_date",{ascending:false}).limit(30);
-  if(error){$("operationsRows").innerHTML=`<tr><td colspan="6">${esc(error.message)}</td></tr>`;return}
-  $("operationsRows").innerHTML=data.map(o=>`<tr>
-<td>${esc(o.operation_date||"")}</td><td>${esc(o.operation_no||"")}</td><td>${esc(o.location||"")}</td>
-<td>${esc(o.product||"")}</td><td>${fmt(o.quantity_mt)}</td><td><span class="badge">${esc(o.status||"")}</span></td>
-</tr>`).join("");
+
+
+/* =====================================================
+   SAVE TANK
+   ===================================================== */
+
+function saveTank(){
+
+  const tank =
+    document.getElementById("tank").value;
+
+  if(!tank){
+
+    showStatus(
+      "tankStatus",
+      "Please select tank.",
+      "error"
+    );
+
+    return;
+  }
+
+  const data = {
+
+    tank_code: tank,
+
+    measurement_time:
+      document.getElementById("measurementTime").value,
+
+    sounding_mm:
+      number("sounding"),
+
+    ullage_mm:
+      number("ullage"),
+
+    temperature_c:
+      number("temperature"),
+
+    density_15c:
+      number("density15"),
+
+    observed_density:
+      number("observedDensity"),
+
+    observed_volume_m3:
+      number("observedVolume"),
+
+    volume_15c_m3:
+      number("volume15"),
+
+    quantity_mt:
+      number("quantity"),
+
+    lcg_m:
+      number("lcg"),
+
+    vcg_m:
+      number("vcg"),
+
+    l_moment:
+      number("lmoment"),
+
+    v_moment:
+      number("vmoment"),
+
+    remarks:
+      document.getElementById("remarks").value
+
+  };
+
+
+  const existing =
+    tankData.findIndex(
+      x => x.tank_code === tank
+    );
+
+  if(existing >= 0){
+
+    tankData[existing] = data;
+
+  }else{
+
+    tankData.push(data);
+
+  }
+
+
+  updateTable();
+
+  showStatus(
+    "tankStatus",
+    tank + " measurement saved.",
+    "ok"
+  );
+
 }
-function resetForm(){
-  ["operation_no","location","supplier","receiving_vessel","quantity_mt","mfm_start","mfm_end","operator_id","op_remarks","start_time","end_time"].forEach(id=>$(id).value="");
-  $("operation_date").value=new Date().toISOString().slice(0,10);
-  $("operation_type").value=""; $("product_id").value="";
-  tanks=[];renderTanks();setStatus("saveStatus","Ready for a new operation.");
+
+
+/* =====================================================
+   UPDATE TABLE
+   ===================================================== */
+
+function updateTable(){
+
+  const table =
+    document.getElementById("tankTable");
+
+  if(tankData.length === 0){
+
+    table.innerHTML =
+      '<tr><td colspan="6">No tank data</td></tr>';
+
+    document.getElementById("totalQuantity")
+      .innerText = "0.000 MT";
+
+    return;
+  }
+
+
+  table.innerHTML = "";
+
+  let total = 0;
+
+
+  tankData.forEach(item => {
+
+    total += Number(item.quantity_mt || 0);
+
+    const row =
+      document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td>${item.tank_code}</td>
+
+      <td>${display(item.temperature_c)}</td>
+
+      <td>${display(item.observed_volume_m3)}</td>
+
+      <td>${display(item.volume_15c_m3)}</td>
+
+      <td>${display(item.quantity_mt)}</td>
+
+      <td>${display(item.lcg_m)}</td>
+
+    `;
+
+    table.appendChild(row);
+
+  });
+
+
+  document.getElementById("totalQuantity")
+    .innerText =
+    total.toFixed(3) + " MT";
+
 }
-restoreConfig();
+
+
+/* =====================================================
+   CLEAR
+   ===================================================== */
+
+function clearOperation(){
+
+  document.getElementById("location").value = "";
+  document.getElementById("product").value = "";
+  document.getElementById("vessel").value = "";
+  document.getElementById("reference").value = "";
+
+  currentOperation = null;
+
+  showStatus(
+    "operationStatus",
+    "Operation form cleared.",
+    "info"
+  );
+
+}
+
+
+function clearTank(){
+
+  const ids = [
+
+    "tank",
+    "measurementTime",
+    "sounding",
+    "ullage",
+    "temperature",
+    "density15",
+    "observedDensity",
+    "observedVolume",
+    "volume15",
+    "quantity",
+    "lcg",
+    "vcg",
+    "lmoment",
+    "vmoment",
+    "remarks"
+
+  ];
+
+  ids.forEach(id => {
+
+    document.getElementById(id).value = "";
+
+  });
+
+}
+
+
+/* =====================================================
+   HELPERS
+   ===================================================== */
+
+function number(id){
+
+  const value =
+    document.getElementById(id).value;
+
+  if(value === "") return null;
+
+  return Number(value);
+
+}
+
+
+function display(value){
+
+  if(value === null ||
+     value === undefined ||
+     value === ""){
+
+    return "-";
+
+  }
+
+  return Number(value).toFixed(3);
+
+}
+
+
+function showStatus(id,text,type){
+
+  const box =
+    document.getElementById(id);
+
+  box.className =
+    "status " + type;
+
+  box.innerText = text;
+
+}
+
 </script>
+
 </body>
 </html>
